@@ -1,0 +1,30 @@
+# Environment & Keys
+.env
+*.key
+*.pem
+
+# Go Binaries & Build Outputs
+server_bin
+proxy_server
+my-genkit-gin/my-genkit-gin
+my-genkit-gin/main
+*.exe
+*.test
+*.prof
+
+# Python & Virtual Environments
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Large SDK & Local Tools
+google-cloud-sdk/
+
+# Graphify Output Artifacts
+graphify-out/
+
+# OS / Editor Files
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AURA — Haute Cuisine & Seasonal Tasting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg-primary:#0d0d0c;--bg-card:rgba(22,21,19,0.7);--border-subtle:rgba(200,162,120,0.15);--accent-gold:#c8a278;--accent-gold-light:#e3c7a3;--text-primary:#f2eee9;--text-muted:#9e9992;--font-serif:'Cormorant Garamond',serif;--font-sans:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background-color:var(--bg-primary);color:var(--text-primary);font-family:var(--font-sans);font-weight:300;line-height:1.7;overflow-x:hidden;background-image:radial-gradient(circle at 50% 0%,rgba(200,162,120,0.08) 0%,transparent 60%),radial-gradient(circle at 80% 80%,rgba(20,19,17,0.9) 0%,var(--bg-primary) 70%);min-height:100vh;}
+header{position:fixed;top:0;width:100%;padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;z-index:100;backdrop-filter:blur(12px);background:rgba(13,13,12,0.6);border-bottom:1px solid rgba(255,255,255,0.03);}
+.brand{font-family:var(--font-serif);font-size:1.75rem;letter-spacing:0.3em;color:var(--text-primary);text-decoration:none;text-transform:uppercase;}
+.brand span{color:var(--accent-gold);}
+nav a{color:var(--text-muted);text-decoration:none;font-size:0.85rem;letter-spacing:0.2em;text-transform:uppercase;margin-left:2.5rem;transition:color 0.4s ease;}
+nav a:hover{color:var(--accent-gold);}
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 2rem;}
+.hero-subtitle{font-size:0.85rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:1.5rem;}
+.hero-title{font-family:var(--font-serif);font-size:clamp(3rem,7vw,6.5rem);font-weight:300;line-height:1.1;max-width:900px;margin-bottom:2rem;background:linear-gradient(180deg,#fff 30%,var(--accent-gold-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{max-width:580px;color:var(--text-muted);font-size:1.05rem;margin-bottom:3rem;}
+.cta-group{display:flex;gap:1.5rem;}
+.btn{padding:1rem 2.5rem;font-size:0.8rem;letter-spacing:0.25em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border-subtle);transition:all 0.4s ease;}
+.btn-primary{background-color:var(--accent-gold);color:var(--bg-primary);border-color:var(--accent-gold);font-weight:500;}
+.btn-primary:hover{background-color:var(--accent-gold-light);transform:translateY(-2px);}
+.btn-outline{color:var(--text-primary);background:transparent;}
+.btn-outline:hover{border-color:var(--accent-gold);color:var(--accent-gold);transform:translateY(-2px);}
+.menu-section{padding:8rem 4rem;max-width:1200px;margin:0 auto;}
+.section-header{text-align:center;margin-bottom:5rem;}
+.section-header h2{font-family:var(--font-serif);font-size:3rem;font-weight:300;margin-bottom:1rem;}
+.divider{width:60px;height:1px;background:var(--accent-gold);margin:0 auto 1rem;opacity:0.6;}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2.5rem;}
+.menu-card{background:var(--bg-card);border:1px solid var(--border-subtle);padding:2.5rem;backdrop-filter:blur(10px);transition:transform 0.4s ease,border-color 0.4s ease;}
+.menu-card:hover{transform:translateY(-5px);border-color:rgba(200,162,120,0.4);}
+.course-number{font-family:var(--font-serif);font-size:1.25rem;color:var(--accent-gold);margin-bottom:0.5rem;font-style:italic;}
+.dish-title{font-family:var(--font-serif);font-size:1.8rem;font-weight:400;margin-bottom:1rem;}
+.dish-ingredients{color:var(--text-muted);font-size:0.9rem;line-height:1.8;}
+footer{border-top:1px solid rgba(255,255,255,0.05);padding:4rem;text-align:center;color:var(--text-muted);font-size:0.8rem;letter-spacing:0.15em;}
+</style>
+</head>
+<body>
+<header>
+<a href="#" class="brand">AU<span>R</span>A</a>
+<nav><a href="#tasting">Tasting Menu</a><a href="/content/wine_pairing.pdf" target="_blank">Wine Cellar</a><a href="/api/v1/health">System Health</a></nav>
+</header>
+<main>
+<section class="hero">
+<p class="hero-subtitle">Nordic & Alpine Culinary Synthesis</p>
+<h1 class="hero-title">Elegance Extracted from Wild Forage & Sea</h1>
+<p class="hero-desc">An immersive 14-course gastronomic journey exploring micro-seasonal harvesting and ancient fermentation techniques.</p>
+<div class="cta-group">
+<a href="#tasting" class="btn btn-primary">Explore Tasting Menu</a>
+<a href="/content/menu_guide.pdf" class="btn btn-outline" target="_blank">Download Guide</a>
+</div>
+</section>
+<section id="tasting" class="menu-section">
+<div class="section-header"><div class="divider"></div><h2>Autumn Harvest Experience</h2></div>
+<div class="menu-grid">
+<article class="menu-card"><div class="course-number">Act I</div><h3 class="dish-title">Langoustine & Pine Needle</h3><p class="dish-ingredients">Raw Norwegian langoustine, preserved green pine cone emulsion, charred kelp crisp, apple blossom dashi.</p></article>
+<article class="menu-card"><div class="course-number">Act II</div><h3 class="dish-title">Aged Reindeer & Fermented Plum</h3><p class="dish-ingredients">Dry-aged Arctic reindeer saddle, black garlic reduction, lacto-fermented wild plum glaze, juniper ember oil.</p></article>
+<article class="menu-card"><div class="course-number">Act III</div><h3 class="dish-title">Birch Bark & Wild Truffle</h3><p class="dish-ingredients">Caramelized birch sap ice, smoked hay cream, autumn forest truffle shavings, toasted hazelnut crumble.</p></article>
+</div>
+</section>
+</main>
+<footer><p>&copy; 2026 AURA HAUTE CUISINE. ZERO-TRUST CERTIFIED ARCHITECTURE.</p></footer>
+</body>
+</html>

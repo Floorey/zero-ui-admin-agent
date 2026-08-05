@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-agent-config
+  namespace: agent-system
+data:
+  CLUSTER_NAME: "k8s-prod-cluster-01"
+  THEME: "dark_cyberpunk"
+  MCP_FIGMA_SERVER: "http://figma-mcp-service:8081"
+  MCP_CANVA_SERVER: "http://canva-mcp-service:8082"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-agent
+  namespace: agent-system
+  labels:
+    app: frontend-agent
+    role: ui-layout-image-generator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-agent
+  template:
+    metadata:
+      labels:
+        app: frontend-agent
+    spec:
+      containers:
+      - name: frontend-agent
+        image: python:3.14-slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            pip install fastapi uvicorn httpx pydantic python-dotenv requests google-auth google-auth-oauthlib && \
+            uvicorn agent_frontend.app:app --host 0.0.0.0 --port 8000
+        envFrom:
+        - configMapRef:
+            name: frontend-agent-config
+        ports:
+        - containerPort: 8000
+          name: http
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-agent-service
+  namespace: agent-system
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: http
+  selector:
+    app: frontend-agent
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-agent-ingress
+  namespace: agent-system
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+  - host: cluster-ui.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-agent-service
+            port:
+              number: 8000

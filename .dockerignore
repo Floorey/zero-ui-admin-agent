@@ -1,0 +1,7 @@
+google-cloud-cli-linux-x86_64.tar.gz
+google-cloud-sdk/
+venv/
+.pytest_cache/
+.git/
+.genkit/
+my-genkit-gin/

@@ -1,0 +1,79 @@
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: k8s-postgres-db
+    environment:
+      POSTGRES_USER: k8sadmin
+      POSTGRES_PASSWORD: k8ssecretpassword
+      POSTGRES_DB: k8s_cluster_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U k8sadmin -d k8s_cluster_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend-server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: k8s-backend-server
+    environment:
+      SERVER_PORT: "8080"
+      POSTGRES_CONN_STRING: "postgres://k8sadmin:k8ssecretpassword@postgres-db:5432/k8s_cluster_db?sslmode=disable"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - backend-net
+      - proxy-net
+    ports:
+      - "8080:8080"
+
+  proxy-middleware:
+    build:
+      context: .
+      dockerfile: proxy/Dockerfile
+    container_name: k8s-zero-trust-proxy
+    environment:
+      PROXY_PORT: "8443"
+      BACKEND_SERVER_URL: "http://backend-server:8080"
+      MAX_CONCURRENT_REQUESTS: "100"
+    depends_on:
+      - backend-server
+    networks:
+      - proxy-net
+      - frontend-net
+    ports:
+      - "8443:8443"
+
+  frontend-agent:
+    build:
+      context: .
+      dockerfile: agent_frontend/Dockerfile
+    container_name: k8s-frontend-agent
+    environment:
+      PYTHONPATH: "/app"
+      CLUSTER_NAME: "k8s-prod-cluster-01"
+      THEME: "dark_cyberpunk"
+    networks:
+      - frontend-net
+      - proxy-net
+    ports:
+      - "8000:8000"
+
+networks:
+  frontend-net:
+    driver: bridge
+  proxy-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

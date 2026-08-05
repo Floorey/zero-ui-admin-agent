@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zero-trust-agent
+
+---
+# 1. PostgreSQL Database Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  namespace: zero-trust-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_USER
+              value: k8sadmin
+            - name: POSTGRES_PASSWORD
+              value: k8ssecretpassword
+            - name: POSTGRES_DB
+              value: k8s_cluster_db
+          ports:
+            - containerPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  namespace: zero-trust-agent
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-db
+
+---
+# 2. Go Backend Server Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-server
+  namespace: zero-trust-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-server
+  template:
+    metadata:
+      labels:
+        app: backend-server
+    spec:
+      containers:
+        - name: backend-server
+          image: k8s-backend-server:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DB_HOST
+              value: postgres-db
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-server
+  namespace: zero-trust-agent
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: backend-server
+
+---
+# 3. Zero-Trust Security Proxy Deployment & Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-middleware
+  namespace: zero-trust-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-middleware
+  template:
+    metadata:
+      labels:
+        app: proxy-middleware
+    spec:
+      containers:
+        - name: proxy
+          image: k8s-zero-trust-proxy:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PROXY_PORT
+              value: "8443"
+            - name: BACKEND_SERVER_URL
+              value: http://backend-server:8080
+          ports:
+            - containerPort: 8443
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-middleware
+  namespace: zero-trust-agent
+spec:
+  type: NodePort
+  ports:
+    - port: 8443
+      targetPort: 8443
+      nodePort: 30443
+  selector:
+    app: proxy-middleware

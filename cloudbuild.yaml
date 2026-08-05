@@ -1,0 +1,27 @@
+steps:
+  # 1. Build Backend Go Server Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/k8s-backend-server:$SHORT_SHA', '-f', 'server/Dockerfile', '.']
+
+  # 2. Build Zero-Trust Proxy Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/k8s-zero-trust-proxy:$SHORT_SHA', '-f', 'proxy/Dockerfile', '.']
+
+  # 3. Build Agent Frontend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/k8s-frontend-agent:$SHORT_SHA', '.']
+
+  # 4. Push Images to Google Container Registry / Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/k8s-backend-server:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/k8s-zero-trust-proxy:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/k8s-frontend-agent:$SHORT_SHA']
+
+images:
+  - 'gcr.io/$PROJECT_ID/k8s-backend-server:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/k8s-zero-trust-proxy:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/k8s-frontend-agent:$SHORT_SHA'
+
+timeout: '1200s'
