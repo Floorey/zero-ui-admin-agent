@@ -12,6 +12,11 @@ my-genkit-gin/main
 *.test
 *.prof
 
+# Archives & Large Downloads
+*.tar.gz
+*.tgz
+*.zip
+
 # Python & Virtual Environments
 __pycache__/
 *.pyc
