@@ -26,9 +26,6 @@ venv/
 # Large SDK & Local Tools
 google-cloud-sdk/
 
-# Graphify Output Artifacts
-graphify-out/
-
 # OS / Editor Files
 .DS_Store
 .vscode/
